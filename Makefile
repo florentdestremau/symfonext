@@ -1,10 +1,4 @@
 start:
-	symfony serve -d
-	symfony local:run -d npm run dev
+	symfony serve &
+	./node_modules/.bin/next dev --experimental-https
 
-install:
-	composer install
-	npm install
-
-stop:
-	symfony server:stop

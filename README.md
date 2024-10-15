@@ -3,8 +3,14 @@
 ## Installation
 ```bash
 ```bash
-make install
+	composer install
+	symfony serve -d
+	npm install
+	./node_modules/.bin/next --experimental-https
 ```
+
+The first next js run will generate ssl certificates. You can quit afterwards.
+
 ## Usage
 ```bash
 ```bash
