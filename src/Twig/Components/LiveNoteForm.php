@@ -25,7 +25,6 @@ use Webmozart\Assert\Assert;
 final class LiveNoteForm extends AbstractController
 {
     use DefaultActionTrait;
-    use ComponentWithFormTrait;
     use SubmitWithRequestFormTrait;
 
     #[LiveAction]
@@ -34,8 +33,7 @@ final class LiveNoteForm extends AbstractController
         Request $request,
         #[Autowire('%kernel.project_dir%/public/uploads/')] string $uploadDirectory,
     ): RedirectResponse {
-//        $this->submitForm(request: $request);
-        $this->submitWithRequest(request: $request);
+        $this->submitForm(request: $request);
         $dto = $this->getForm()->getData();
 
         Assert::isInstanceOf($dto, NoteLiveFormDto::class);

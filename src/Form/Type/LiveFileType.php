@@ -10,7 +10,7 @@ class LiveFileType extends AbstractType
 {
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(['attr' => ['data-live-ignore' => true]]);
+        $resolver->setDefaults(['attr' => ['data-live-ignore' => '']]);
     }
 
     public function getParent(): string

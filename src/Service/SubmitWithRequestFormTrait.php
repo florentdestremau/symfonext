@@ -4,16 +4,27 @@ namespace App\Service;
 
 use Symfony\Component\Form\Util\FormUtil;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\UX\LiveComponent\ComponentWithFormTrait;
 use Symfony\UX\LiveComponent\Util\LiveFormUtility;
 
 trait SubmitWithRequestFormTrait
 {
-    use ComponentWithFormTrait;
+    use ComponentWithFormTrait {
+        submitForm as defaultSubmitForm;
+    }
 
-    private function submitWithRequest(Request $request): void
+    public function __construct(private readonly RequestStack $requestStack)
     {
+    }
+
+    private function submitForm(bool $validateAll = true, ?Request $request = null): void
+    {
+        if (!$request) {
+            $request = $this->requestStack->getCurrentRequest();
+        }
+
         if (null !== $this->formView) {
             // Two scenarios can cause this:
             // 1) Not intended: form was already submitted and validated in the same main request.
@@ -47,10 +58,17 @@ trait SubmitWithRequestFormTrait
         $form->submit($data);
         $this->shouldAutoSubmitForm = false;
 
-        // mark the entire component as validated
-        $this->isValidated = true;
-        // set fields back to empty, as now the *entire* object is validated.
-        $this->validatedFields = [];
+        if ($validateAll) {
+            // mark the entire component as validated
+            $this->isValidated = true;
+            // set fields back to empty, as now the *entire* object is validated.
+            $this->validatedFields = [];
+        } else {
+            // we only want to validate fields in validatedFields
+            // but really, everything is validated at this point, which
+            // means we need to clear validation on non-matching fields
+            $this->clearErrorsForNonValidatedFields($form, $form->getName());
+        }
 
         // re-extract the "view" values in case the submitted data
         // changed the underlying data or structure of the form

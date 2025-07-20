@@ -63,13 +63,11 @@ final class NoteController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $note = new Note()->setTitle($dto->title);
 
-            $file = $dto->file;
-            if ($file instanceof UploadedFile) {
-                $uniqueName = uniqid() . '.' . $file->guessExtension();
-                $file->move($uploadDirectory, $uniqueName);
+            if ($dto->file instanceof UploadedFile) {
+                $uniqueName = uniqid() . '.' . $dto->file->guessExtension();
+                $dto->file->move($uploadDirectory, $uniqueName);
                 $note->setFileName($uniqueName);
             }
 
