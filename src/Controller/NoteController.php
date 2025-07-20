@@ -53,6 +53,12 @@ final class NoteController extends AbstractController
         ]);
     }
 
+    #[Route('/new-live', name: 'app_note_newlive')]
+    public function newLive(): Response
+    {
+        return $this->render('note/new_live.html.twig');
+    }
+
     #[Route('/{id}', name: 'app_note_show', methods: ['GET'])]
     public function show(Note $note): Response
     {

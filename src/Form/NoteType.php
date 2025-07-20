@@ -18,9 +18,6 @@ class NoteType extends AbstractType
             ->add('file', FileType::class, [
                 'mapped' => false,
             ])
-            ->add('createdAt', null, [
-                'widget' => 'single_text',
-            ])
         ;
     }
 
