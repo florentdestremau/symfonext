@@ -23,6 +23,9 @@ class Note
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
+    #[ORM\ManyToOne(inversedBy: 'notes')]
+    private ?Briefcase $briefcase = null;
+
     public function __construct()
     {
         $this->createdAt = new DatePoint();
@@ -65,6 +68,18 @@ class Note
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getBriefcase(): ?Briefcase
+    {
+        return $this->briefcase;
+    }
+
+    public function setBriefcase(?Briefcase $briefcase): static
+    {
+        $this->briefcase = $briefcase;
 
         return $this;
     }

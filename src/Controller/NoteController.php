@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Dto\NoteLiveFormDto;
+use App\Dto\NoteDto;
 use App\Entity\Note;
 use App\Form\NoteLiveFormType;
 use App\Form\NoteType;
@@ -58,7 +58,7 @@ final class NoteController extends AbstractController
     #[Route('/new-dto', name: 'app_note_newdto', methods: ['GET', 'POST'])]
     public function newDto(Request $request, EntityManagerInterface $entityManager, #[Autowire('%kernel.project_dir%/public/uploads/')] string $uploadDirectory)
     {
-        $dto = new NoteLiveFormDto();
+        $dto = new NoteDto();
         $form = $this->createForm(NoteLiveFormType::class, $dto);
         $form->handleRequest($request);
 

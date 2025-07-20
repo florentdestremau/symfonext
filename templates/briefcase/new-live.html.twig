@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Briefcase{% endblock %}
+
+{% block body %}
+    <h1>Create new Briefcase</h1>
+
+    <twig:BriefcaseForm />
+    <script>
+        document.addEventListener('change', function (event) {
+            const input = event.target;
+
+            if (input.matches('input[type="file"]')) {
+                const file = input.files[0];
+
+                if (file && file.size > 102400) {
+                    alert('The selected file must be less than 100KB.');
+                    input.value = '';
+                }
+            }
+        });
+    </script>
+
+    <a href="{{ path('app_briefcase_index') }}">back to list</a>
+{% endblock %}

@@ -11,15 +11,11 @@ use Symfony\UX\LiveComponent\Util\LiveFormUtility;
 
 trait SubmitWithRequestFormTrait
 {
-    use ComponentWithFormTrait {
-        submitForm as defaultSubmitForm;
-    }
-
     public function __construct(private readonly RequestStack $requestStack)
     {
     }
 
-    private function submitForm(bool $validateAll = true, ?Request $request = null): void
+    private function submitFormWithRequest(bool $validateAll = true, ?Request $request = null): void
     {
         if (!$request) {
             $request = $this->requestStack->getCurrentRequest();

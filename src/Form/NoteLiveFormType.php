@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Dto\NoteLiveFormDto;
+use App\Dto\NoteDto;
 use App\Form\Type\LiveFileType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -29,7 +29,7 @@ class NoteLiveFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => NoteLiveFormDto::class,
+            'data_class' => NoteDto::class,
         ]);
     }
 }

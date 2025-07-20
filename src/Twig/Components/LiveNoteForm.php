@@ -2,7 +2,7 @@
 
 namespace App\Twig\Components;
 
-use App\Dto\NoteLiveFormDto;
+use App\Dto\NoteDto;
 use App\Entity\Note;
 use App\Form\NoteLiveFormType;
 use App\Service\SubmitWithRequestFormTrait;
@@ -25,18 +25,23 @@ use Webmozart\Assert\Assert;
 final class LiveNoteForm extends AbstractController
 {
     use DefaultActionTrait;
+    use ComponentWithFormTrait;
     use SubmitWithRequestFormTrait;
+
+    private function submitForm(bool $validateAll = true): void
+    {
+        $this->submitFormWithRequest($validateAll, $this->requestStack->getCurrentRequest());
+    }
 
     #[LiveAction]
     public function save(
         EntityManagerInterface $entityManager,
-        Request $request,
         #[Autowire('%kernel.project_dir%/public/uploads/')] string $uploadDirectory,
     ): RedirectResponse {
-        $this->submitForm(request: $request);
+        $this->submitForm();
         $dto = $this->getForm()->getData();
 
-        Assert::isInstanceOf($dto, NoteLiveFormDto::class);
+        Assert::isInstanceOf($dto, NoteDto::class);
 
         // Create a new Note entity from the DTO
         $note = new Note();

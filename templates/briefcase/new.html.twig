@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Briefcase{% endblock %}
+
+{% block body %}
+    <h1>Create new Briefcase</h1>
+
+    {{ include('briefcase/_form.html.twig') }}
+
+    <a href="{{ path('app_briefcase_index') }}">back to list</a>
+{% endblock %}
