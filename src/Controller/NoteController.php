@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Dto\NoteLiveFormDto;
 use App\Entity\Note;
+use App\Form\NoteLiveFormType;
 use App\Form\NoteType;
 use App\Repository\NoteRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -50,6 +52,35 @@ final class NoteController extends AbstractController
         return $this->render('note/new.html.twig', [
             'note' => $note,
             'form' => $form,
+        ]);
+    }
+
+    #[Route('/new-dto', name: 'app_note_newdto', methods: ['GET', 'POST'])]
+    public function newDto(Request $request, EntityManagerInterface $entityManager, #[Autowire('%kernel.project_dir%/public/uploads/')] string $uploadDirectory)
+    {
+        $dto = new NoteLiveFormDto();
+        $form = $this->createForm(NoteLiveFormType::class, $dto);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $note = new Note()->setTitle($dto->title);
+
+            $file = $dto->file;
+            if ($file instanceof UploadedFile) {
+                $uniqueName = uniqid() . '.' . $file->guessExtension();
+                $file->move($uploadDirectory, $uniqueName);
+                $note->setFileName($uniqueName);
+            }
+
+            $entityManager->persist($note);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_note_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('note/new.html.twig', [
+            'form' => $form->createView(),
         ]);
     }
 

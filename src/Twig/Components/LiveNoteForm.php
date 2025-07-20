@@ -2,8 +2,10 @@
 
 namespace App\Twig\Components;
 
+use App\Dto\NoteLiveFormDto;
 use App\Entity\Note;
-use App\Form\NoteType;
+use App\Form\NoteLiveFormType;
+use App\Service\SubmitWithRequestFormTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -17,15 +19,14 @@ use Symfony\UX\LiveComponent\Attribute\LiveAction;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
 use Symfony\UX\LiveComponent\ComponentWithFormTrait;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
+use Webmozart\Assert\Assert;
 
 #[AsLiveComponent]
 final class LiveNoteForm extends AbstractController
 {
     use DefaultActionTrait;
     use ComponentWithFormTrait;
-
-    #[LiveProp]
-    public ?Note $initialFormValues = null;
+    use SubmitWithRequestFormTrait;
 
     #[LiveAction]
     public function save(
@@ -33,10 +34,18 @@ final class LiveNoteForm extends AbstractController
         Request $request,
         #[Autowire('%kernel.project_dir%/public/uploads/')] string $uploadDirectory,
     ): RedirectResponse {
-        $this->submitForm();
-        $note = $this->getForm()->getData();
+//        $this->submitForm(request: $request);
+        $this->submitWithRequest(request: $request);
+        $dto = $this->getForm()->getData();
 
-        $file = $this->getForm()->get('file')->getData();
+        Assert::isInstanceOf($dto, NoteLiveFormDto::class);
+
+        // Create a new Note entity from the DTO
+        $note = new Note();
+        $note->setTitle($dto->title);
+
+        // Handle file upload
+        $file = $dto->file;
 
         if ($file instanceof UploadedFile) {
             $uniqueName = uniqid() . '.' . $file->guessExtension();
@@ -48,11 +57,10 @@ final class LiveNoteForm extends AbstractController
         $entityManager->flush();
 
         return $this->redirectToRoute('app_note_index', [], Response::HTTP_SEE_OTHER);
-
     }
 
     protected function instantiateForm(): FormInterface
     {
-        return $this->createForm(NoteType::class, $this->initialFormValues);
+        return $this->createForm(NoteLiveFormType::class);
     }
 }
