@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Dto\NoteLiveFormDto;
+use App\Form\Type\LiveFileType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -18,7 +19,7 @@ class NoteLiveFormType extends AbstractType
                 'label' => 'Title',
                 'required' => true,
             ])
-            ->add('file', FileType::class, [
+            ->add('file', LiveFileType::class, [
                 'label' => 'File',
                 'required' => false,
             ])

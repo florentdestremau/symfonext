@@ -22,7 +22,7 @@
                 <td>{{ note.title }}</td>
                 <td>
                     {% if note.fileName %}
-                        <a href="{{ note.fileName|file_url }}">
+                        <a href="{{ note.fileName|file_url }}" target="_blank">
                             {{ note.fileName }}
                         </a>
                     {% endif %}
